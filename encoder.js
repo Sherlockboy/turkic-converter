@@ -40,7 +40,7 @@ const latinToTurkicMap = {
   Z: "𐰕",
 };
 
-const lineEndingChars = new Set([".", "?", "!", "...", ":", ";"]);
+const lineEndingChars = new Set([".", "?", "!", "...", ":", ";", ","]);
 
 function moveFirstCharToEnd(str) {
   firstChar = str.charAt(0);
