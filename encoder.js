@@ -1,11 +1,19 @@
 const latinToTurkicMap = {
   // special characters
   "'O": "𐰇",
+  "‘O": "𐰇",
+  "’O": "𐰇",
+  "´O": "𐰇",
   "'G": "𐰍",
+  "‘G": "𐰍",
+  "’G": "𐰍",
+  "´G": "𐰍",
   HS: "𐱁",
   HC: "𐰱",
   H: "𐰴",
   X: "𐰴",
+  ")": "(",
+  "(": ")",
 
   // letters
   A: "𐰀",
@@ -32,19 +40,47 @@ const latinToTurkicMap = {
   Z: "𐰕",
 };
 
+const lineEndingChars = new Set([".", "?", "!", "...", ":", ";"]);
+
+function moveFirstCharToEnd(str) {
+  firstChar = str.charAt(0);
+  
+  if (str && str.length > 0 && lineEndingChars.has(str.charAt(0))) {
+    // If the first character matches one of the special characters, remove it from the start
+    str = str.slice(1);
+
+    // Add the matched character at the end
+    str += firstChar;
+  }
+
+  return str;
+}
+
 function convert(inputString) {
-  inputString = inputString
-    .toUpperCase()
-    .split("")
-    .reverse()
-    .join("");
-
-  const pattern = new RegExp(Object.keys(latinToTurkicMap).join("|"), "g");
-
-  const result = inputString.replace(
-    pattern,
-    (match) => latinToTurkicMap[match] || match
+  const pattern = new RegExp(
+    // Load all the keys in the map into a regular expression
+    Object.keys(latinToTurkicMap)
+      // Escape special characters
+      .map((key) => key.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"))
+      // Join the keys with a pipe
+      .join("|"),
+    "g"
   );
 
-  return result.replace(/ /g, " : ");
+  return inputString
+    .toUpperCase()
+    .split(" ")
+    .reverse()
+    .map((word) =>
+      word
+        .split("")
+        .reverse()
+        .join("")
+        .replace(pattern, (match) => latinToTurkicMap[match] || match)
+    )
+    .join(" : ")
+    .split("\n")
+    .map((line) => moveFirstCharToEnd(line))
+    .reverse()
+    .join("\n");
 }
