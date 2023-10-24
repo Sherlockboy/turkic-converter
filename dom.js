@@ -3,5 +3,5 @@ const toTextArea = document.getElementById("toText");
 const convertButton = document.getElementById("convertButton");
 
 convertButton.addEventListener("click", function () {
-  toTextArea.value = convert(fromTextArea.value);
+  toTextArea.textContent = convert(fromTextArea.value);
 });
