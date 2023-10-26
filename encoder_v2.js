@@ -3,8 +3,8 @@ const symbolsMap = {
   "’": "'",
   "‘": "'",
   "´": "'",
-  '"': "»",
-  '"': "«",
+  '”': "»",
+  '“': "«",
   ".": "٠",
   ",": "،",
   ";": "؛",
@@ -54,6 +54,8 @@ function convert(inputString) {
 
   const lettersPattern = new RegExp(Object.keys(lettersMap).join("|"), "g");
 
+  inputString = replaceDoubleStraightQuotes(inputString);
+
   return inputString
     .toUpperCase()
     .split(" ")
@@ -64,4 +66,13 @@ function convert(inputString) {
       word.replace(lettersPattern, (match) => lettersMap[match] || match)
     )
     .join(" : ");
+}
+
+function replaceDoubleStraightQuotes(inputString) {
+  let count = 0;
+  let outputString = inputString.replace(/"/g, () =>
+    count++ % 2 === 0 ? "«" : "»"
+  );
+
+  return outputString;
 }
