@@ -44,6 +44,15 @@ const lettersMap = {
   Z: "𐰕",
 };
 
+const cleaner = {
+  "٠ : ": "٠ ",
+  "، : ": "، ",
+  "! : ": "! ",
+  "؟ : ": "؟ ",
+  "؛ : ": "؛ ",
+  " : - : ": " - ",
+}
+
 function convert(inputString) {
   const symbolsPattern = new RegExp(
     Object.keys(symbolsMap)
@@ -54,9 +63,7 @@ function convert(inputString) {
 
   const lettersPattern = new RegExp(Object.keys(lettersMap).join("|"), "g");
 
-  inputString = replaceDoubleStraightQuotes(inputString);
-
-  return inputString
+  result = replaceDoubleStraightQuotes(inputString)
     .toUpperCase()
     .split(" ")
     .map((word) =>
@@ -66,6 +73,15 @@ function convert(inputString) {
       word.replace(lettersPattern, (match) => lettersMap[match] || match)
     )
     .join(" : ");
+
+    const cleanerPattern = new RegExp(
+      Object.keys(cleaner)
+        .map((key) => key.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"))
+        .join("|"),
+      "g"
+    );
+
+    return result.replace(cleanerPattern, (match) => cleaner[match] || match);
 }
 
 function replaceDoubleStraightQuotes(inputString) {
